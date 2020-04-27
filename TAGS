@@ -1,0 +1,16 @@
+
+api/get_characters.rb,220
+class GetCharacters < StructureCallsGetCharacters3,0
+    def initializeinitialize5,0
+    def get_all_charactersget_all_characters10,0
+    def get_characters_information(characterid)get_characters_information14,0
+
+api/get_series.rb,193
+class GetSeries < StructureCallsGetSeries3,0
+    def initializeinitialize5,0
+    def get_all_seriesget_all_series10,0
+    def get_series_information(seriesid)get_series_information14,0
+
+common/structure.rb,92
+class StructureCallsStructureCalls3,0
+    def auth(method, url, timestamp, hash)auth5,0
