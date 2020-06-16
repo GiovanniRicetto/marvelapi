@@ -1,88 +1,61 @@
 require_relative '../api/get_characters'
 require_relative '../api/get_series'
 
-describe "Testing Marvel API" do
-    before(:all) do
-        @characters = GetCharacters.new
-        @series = GetSeries.new
-    end
+describe "Testing Marvel API", :all do
+    let(:character) {GetCharacters.new.get_character}
+    let(:serie) {GetSeries.new.get_serie}
+    let(:allcharacters) {GetCharacters.new.get_all_characters}
+    let(:allseries) {GetSeries.new.get_all_series}
+    let(:characterserieintel) {GetCharacters.new.get_characterseries_information(@hulkid, @serieid)}
+    let(:serieintel) {GetSeries.new.get_series_information(@serieid)}
 
-    context "Getting information" do
+
+    context "Healthcheck APIs", :healthcheck do
         it "GET all characters" do
-            get = @characters.get_all_characters
-            expect(get.code).to eq(200)
-        end
-
-        it "GET one characters" do
-            get = @characters.get_all_characters
-            amountofcharacters = get["data"]["results"].count
-            characternumber = rand(0..amountofcharacters)
-            mycharactersis = get["data"]["results"][characternumber]["name"]
-            expect(mycharactersis).to be_kind_of(String)
-        end
-
-        it "GET series of a character" do
-            get = @characters.get_all_characters
-            amountofcharacters = get["data"]["results"].count
-            characternumber = rand(0..amountofcharacters)
-            characterid = get["data"]["results"][characternumber]["id"]
-            characterinformation = @characters.get_characters_information(characterid)
-            characterseries = characterinformation["data"]["results"][0]["series"]
-            expect(characterseries).to be_kind_of(Hash)
+            expect(allcharacters.code).to eq(200)
         end
 
         it "GET all series" do
-            get = @series.get_all_series
-            expect(get.code).to eq(200)
-        end
-
-        it "GET one series" do
-            get = @series.get_all_series
-            amountofseries = get["data"]["results"].count
-            seriesnumber = rand(0..amountofseries)
-            myseriessis = get["data"]["results"][seriesnumber]["title"]
-            expect(myseriessis).to be_kind_of(String)
-        end
-
-        it "GET characters of series" do
-            get = @series.get_all_series
-            amountofseries = get["data"]["results"].count
-            sleep 0.5
-            seriesnumber = rand(0..amountofseries)
-            seriesid = get["data"]["results"][seriesnumber]["id"]
-            seriesinformation = @series.get_series_information(seriesid)
-            seriescharacters = seriesinformation["data"]["results"][0]["characters"]
-            expect(seriescharacters).to be_kind_of(Hash)
+            expect(allseries.code).to eq(200)
         end
     end
 
-    context "Getting information and crossing it" do
+    context "Getting character intel", :characterapi do
+        it "GET Hulk" do
+            mycharactersis = character["data"]["results"][0]["name"]
+            expect(mycharactersis).to eq("Hulk")
+            expect(mycharactersis).not_to eq("Spider-Man")
+        end
+
+        it "GET a serie of Hulk", :hulkserieintel do
+            characterserie = character["data"]["results"][0]["series"]["items"][18]["name"]
+            expect(characterserie).to eq("Avengers & The Infinity Gauntlet (2018)")
+            expect(characterserie).not_to eq("Avengers Annual")
+        end
+    end
+
+    context "Getting Incredible Hulk Serie Info", :serieapi do
+        it "GET one serie of Hulk", :hulkserie  do
+            myseriessis = serie["data"]["results"][0]["title"]
+            expect(myseriessis).to eq("Incredible Hulk (1962 - 1999)")
+            expect(myseriessis).not_to eq("Fantastic Four")
+        end
+
+        it "GET a character of serie", :characterinaserie  do
+            @serieid = serie["data"]["results"][0]["id"]
+            seriecharacter = serieintel["data"]["results"][0]["characters"]["items"][19]["name"]
+            expect(seriecharacter).to eq("Daredevil")
+            expect(seriecharacter).not_to eq("Cable")
+        end
+    end
+
+    context "Getting information in 2 APIs and crossing to get information", :crossingapis do
         it "Crossing information" do
-            get = @characters.get_all_characters
-            amountofcharacters = get["data"]["results"].count
-            characternumber = rand(0..amountofcharacters)
-            characterid = get["data"]["results"][characternumber]["id"]
-            characterinformation = @characters.get_characters_information(characterid)
-            characterseries = characterinformation["data"]["results"][0]["series"]
-            amountofseries = characterseries["items"].count
-            serienumber = rand(0..amountofseries)
-            sleep 1
-            seriesname = characterseries["items"][serienumber]["name"]
-            ##
-            
-            get = @series.get_all_series
-            amountofseries = get["data"]["results"].count
-            sleep 0.5
-            seriesnumber = rand(0..amountofseries)
-            seriesid = get["data"]["results"][seriesnumber]["id"]
-            seriesinformation = @series.get_series_information(seriesid)
-            seriestitle = seriesinformation["data"]["results"][0]["title"]
-            matcher = expect(seriesname).not_to eq(seriestitle)
-            if matcher == true
-                puts "Okay, it's very hard to be equal. :("
-            else
-                puts "Nice one. It's very hard coincidence! :)"
-            end
+            @hulkid = character["data"]["results"][0]["id"]
+            @serieid = serie["data"]["results"][0]["id"]
+            mycharacterserieis = characterserieintel["data"]["results"][0]["title"]
+            expect(mycharacterserieis).to eq("Incredible Hulk (1962 - 1999)")
+            expect(mycharacterserieis).not_to eq("Watchman")
         end
     end
 end

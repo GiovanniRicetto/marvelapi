@@ -11,7 +11,11 @@ class GetCharacters < StructureCalls
         response = auth("get", "#{$env["base_url"]}/v1/public/characters", @timestamp, @hash)
     end
 
-    def get_characters_information(characterid)
-        response = auth("get", "#{$env["base_url"]}/v1/public/characters/#{characterid}", @timestamp, @hash)
+    def get_character
+        response = callingcharacter("get", "#{$env["base_url"]}/v1/public/characters", @timestamp, @hash)
+    end
+    
+    def get_characterseries_information(hulkid, serieid)
+        response = auth2("get", "#{$env["base_url"]}/v1/public/characters/#{hulkid}/series", @timestamp, @hash, serieid)
     end
 end

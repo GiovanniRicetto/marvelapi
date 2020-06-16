@@ -1,15 +1,10 @@
 require 'httparty'
 require 'digest'
 require 'pry'
-require 'json-schema'
-require 'json_matchers/rspec'
-require 'json'
 
 
-JsonMatchers.schema_root = "./schemas"
-
-$auth = YAML.load_file('common\auth.yml')
-$env = YAML.load_file('common\environment.yml')
+$auth = YAML.load_file('common/auth.yml')
+$env = YAML.load_file('common/environment.yml')
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
