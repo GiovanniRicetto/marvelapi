@@ -2,12 +2,14 @@ require_relative '../api/get_characters'
 require_relative '../api/get_series'
 
 describe "Testing Marvel API", :all do
-    let(:character) {GetCharacters.new.get_character}
-    let(:serie) {GetSeries.new.get_serie}
-    let(:allcharacters) {GetCharacters.new.get_all_characters}
-    let(:allseries) {GetSeries.new.get_all_series}
-    let(:characterserieintel) {GetCharacters.new.get_characterseries_information(@hulkid, @serieid)}
-    let(:serieintel) {GetSeries.new.get_series_information(@serieid)}
+    subject(:getChars) {GetCharacters.new}
+    subject(:getSeries) {GetSeries.new}
+    let(:character) {getChars.get_character}
+    let(:serie) {getSeries.get_serie}
+    let(:allcharacters) {getChars.get_all_characters}
+    let(:allseries) {getSeries.get_all_series}
+    let(:characterserieintel) {getChars.get_characterseries_information(@hulkid, @serieid)}
+    let(:serieintel) {getSeries.get_series_information(@serieid)}
 
 
     context "Healthcheck APIs", :healthcheck do
